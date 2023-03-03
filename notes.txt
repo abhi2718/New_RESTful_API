@@ -1,0 +1,2 @@
+mongoose :- 
+mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
