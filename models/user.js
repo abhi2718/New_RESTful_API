@@ -16,6 +16,14 @@ const mongoose = require("mongoose"),
         require: true,
         select: false,
       },
+      age: {
+        type: Number,
+        require:false,
+      },
+      following: [{
+        type: Schema.Types.ObjectId,
+        ref:"User"
+      }]
     },
     {
       timestamps: true,

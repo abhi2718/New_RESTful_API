@@ -1,2 +1,56 @@
 mongoose :- 
 mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
+
+Populate more than one properties :
+const userInfo = await User.findById(user._id).populate(["following","userRef]);
+
+Adding following in userSchema as array  of id and pushing new following -> 
+
+const mongoose = require("mongoose"),
+  bcrypt = require("bcrypt"),
+  Schema = mongoose.Schema,
+  userSchema = new Schema(
+    {
+      name: {
+        type: String,
+        require: true,
+      },
+      email: {
+        type: String,
+        require: true,
+      },
+      password: {
+        type: String,
+        require: true,
+        select: false,
+      },
+      following: [{
+        type: Schema.Types.ObjectId,
+        ref:"User"
+      }]
+    },
+    {
+      timestamps: true,
+    }
+  );
+userSchema.methods.encryptPassword = async function (password) {
+  const salt = await bcrypt.genSalt(5);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+userSchema.methods.validatePassword = async function (candidatePassword) {
+  const result = await bcrypt.compare(candidatePassword, this.password);
+  return result;
+};
+module.exports = mongoose.model("User", userSchema);
+
+
+exports.fllow = async(req, res, next) => { 
+    try {
+        req.user.following.push(req.params.id);
+        await req.user.save();
+        res.status(200).json({message:"success"})
+    } catch (error) {
+        next(error);
+    }
+}

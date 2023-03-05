@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
       throw err;
     }
     const token = jwt.encode({ id: user._id }, config.jwtSecret);
-    const userInfo = await User.findById(user._id);
+    const userInfo = await User.findById(user._id).populate(["following"]);
     res.status(200).json({
       userInfo,
       token,
