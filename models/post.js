@@ -10,6 +10,10 @@ const mongoose = require("mongoose"),
         type: String,
         require: true,
       },
+      userRef: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
     },
     {
       timestamps: true,

@@ -13,7 +13,7 @@ router.post(
   postController.store
 );
 
-router.patch('/:id', description, postController.update);
-router.delete('/:id', postController.delete);
+router.patch("/:id", description, postController.update);
+router.delete("/:id", postController.delete);
 
 module.exports = router;
