@@ -20,10 +20,15 @@ const mongoose = require("mongoose"),
         type: Number,
         require:false,
       },
-      following: [{
-        type: Schema.Types.ObjectId,
-        ref:"User"
-      }]
+      gender: {
+        type: String,
+        require: false,
+      },
+      caste: {
+        type: String,
+        require: false,
+      },
+      following: []
     },
     {
       timestamps: true,

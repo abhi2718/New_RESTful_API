@@ -1,4 +1,4 @@
-// https://www.youtube.com/watch?v=m-O7GmGowOU
+// https://www.youtube.com/watch?v=8O4qTCHDmbU&list=PLWkguCWKqN9OncFtHmijyW0VS6f5BEKpV&index=1
 mongoose :- 
 mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
 
@@ -55,3 +55,52 @@ exports.fllow = async(req, res, next) => {
         next(error);
     }
 }
+
+# Important Operators of mongodb are 
+
+$set operator replaces the value of a field with the specified value.
+The $set
+ operator expression has the following form:
+
+{ $set: { <field1>: <value1>, ... } }
+To specify a <field> in an embedded document or in an array, use dot notation.
+Visit this link for more information => https://www.mongodb.com/docs/manual/reference/operator/update/set/
+
+ 
+$unset
+ operator deletes a particular field. Consider the following syntax:
+{ $unset: { <field1>: "", ... } }
+
+ The specified value in the $unset 
+ expression (i.e. "") does not impact the operation.
+ To specify a <field> in an embedded document or in an array, use dot notation.
+ Visit this link for more information => https://www.mongodb.com/docs/manual/reference/operator/update/unset/#:~:text=The%20%24unset%20operator%20deletes%20a,an%20array%2C%20use%20dot%20notation.
+
+
+$push
+The $push operator appends a specified value to an array.
+
+The $push
+ operator has the form:
+{ $push: { <field1>: <value1>, ... } }
+To specify a <field> in an embedded document or in an array, use dot notation.
+for more information => https://www.mongodb.com/docs/manual/reference/operator/update/push/
+
+# Updating a document inside  array of object :-
+
+   const user = await User.updateOne({
+      _id: req.params.id,
+      "following.id":req.params.id  <--- It will perform projection 
+    }, {
+      $set:{ "following.$.name":req.body.name },
+    });
+
+
+# $pull 
+The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
+
+The $pull
+operator has the form:
+{ $pull: { <field1>: <value|condition>, <field2>: <value|condition>, ... } }
+To specify a <field> in an embedded document or in an array, use dot notation.
+
