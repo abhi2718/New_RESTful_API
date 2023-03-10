@@ -1,5 +1,7 @@
-//https://www.youtube.com/watch?v=DZBGEVgL2eE
-// https://www.youtube.com/watch?v=8O4qTCHDmbU&list=PLWkguCWKqN9OncFtHmijyW0VS6f5BEKpV&index=1
+
+// MongoDB Aggregation Framework --> https://www.youtube.com/watch?v=s44QWegr2l8&list=PLWkguCWKqN9OwcbdYm4nUIXnA2IoXX0LI&index=2
+//Mongoose Crash Course - Beginner Through Advanced By Kyle -> https://www.youtube.com/watch?v=DZBGEVgL2eE
+//MongoDB Update Queries: 01 Introduction to the Document Updates https://www.youtube.com/watch?v=8O4qTCHDmbU&list=PLWkguCWKqN9OncFtHmijyW0VS6f5BEKpV&index=1
 mongoose :- 
 mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
 
@@ -239,3 +241,55 @@ schema.post('save', function(doc) {
 schema.post('remove', function(doc) {
   console.log('%s has been removed', doc._id);
 });
+
+// Aggregation Framework Tutorial
+
+// Match Stage
+// $match the operator is use to match the condation it is like find({})
+db.persons.aggregate([
+  {
+    $match:{
+      age:{
+        $eq:20
+      },
+      eyeColor:"green"
+    } 
+  }
+  ])
+
+  // Group Stage
+   // $group operator is use to group the element Note _id is mendatory 
+  db.persons.aggregate([
+  {
+    $group:{
+      _id:{
+        age:"$age",  // "$age" is expression 
+        newTags:"$tags",
+        rating:{$sum:"$rating"} // 
+      }
+    }
+  }
+  ])
+
+// counting the result
+The syntax for count is  $count:"ageAndgender" here age and gender both are keys inside the _id 
+  db.persons.aggregate([
+  {
+   $match:{
+     gender:"female"
+   }
+  },
+ 
+
+  {
+    $group:{
+      _id:{
+        age:"$age",
+        gender:"$gender"
+      }
+    }
+  },
+    {
+    $count:"ageAndgender"
+  },
+  ])
