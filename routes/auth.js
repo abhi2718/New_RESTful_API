@@ -7,5 +7,6 @@ const express = require("express"),
 router.post("/login", hasEmail, hasPassword, authController.login);
 router.post("/signup", hasEmail, hasPassword, hasName, authController.signup);
 router.get("/me", passportJWT.authenticate(), authController.me);
+router.get("/users/:name", authController.users);
 
 module.exports = router;

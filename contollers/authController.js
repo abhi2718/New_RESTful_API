@@ -33,8 +33,7 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   try {
     validationHandler(req);
-    const { email, password, name } = req.body;
-
+    const { email, password, name, age } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       const err = new Error("Email already in use!");
@@ -44,6 +43,7 @@ exports.signup = async (req, res, next) => {
     let newUser = new User();
     newUser.email = email;
     newUser.name = name;
+    newUser.age = age;
     newUser.password = await newUser.encryptPassword(password);
     newUser = await newUser.save();
     const token = jwt.encode({ id: newUser._id }, config.jwtSecret);
@@ -59,7 +59,19 @@ exports.signup = async (req, res, next) => {
 
 exports.me = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user);
+    const user = await User.findById(req.user._id);
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.users = async (req, res, next) => {
+  try {
+    let user = await User.findOne({ age: { $gt: 21 } });
+    user.name = "Abhishek Singh";
+    user.age = 24;
+    user = await user.save();
     res.status(200).json(user);
   } catch (err) {
     next(err);

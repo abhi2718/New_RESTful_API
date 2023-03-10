@@ -1,3 +1,4 @@
+//https://www.youtube.com/watch?v=DZBGEVgL2eE
 // https://www.youtube.com/watch?v=8O4qTCHDmbU&list=PLWkguCWKqN9OncFtHmijyW0VS6f5BEKpV&index=1
 mongoose :- 
 mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
@@ -104,3 +105,137 @@ operator has the form:
 { $pull: { <field1>: <value|condition>, <field2>: <value|condition>, ... } }
 To specify a <field> in an embedded document or in an array, use dot notation.
 
+
+# The validation applied to the user schema level will not work in case of 
+ findByIdAndUpdate,
+ updateOne,
+ updateMany
+ while in case of .save(),.create() it will work  
+
+ age: {
+        type: Number,
+        require: false,
+        validate: {
+          validator: value => {
+            if (value % 2 === 0) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          message:props => `${props.value} is not an even number`
+        }
+      }
+
+MongoDB Operators :- 
+visit link for more information -> https://www.mongodb.com/docs/manual/reference/operator/
+Operators
+
+Query and Projection Operators
+Query operators provide ways to locate data within the database and projection operators modify how data is presented.
+Update Operators
+Update operators are operators that enable you to modify the data in your database or add additional data.
+Aggregation Pipeline Stages
+Available aggregation stages for Aggregation Pipeline.
+Aggregation Pipeline Operators
+Aggregation pipeline operations have a collection of operators available to define and manipulate documents in pipeline stages.
+
+$where :- we can use js function to make custom query and projection 
+visit link for more information -> https://www.mongodb.com/docs/manual/reference/operator/query/where/#mongodb-query-op.-where
+const users = await User.find({
+      $where: function () {
+         return this.following.find(item => item.id === "64045593bc781c63ba0b1e66")
+      },
+});
+
+we can write $where as follow 
+exports.users = async (req, res, next) => {
+  try {
+    const users = await User.$where(function () {
+      return this.name === "Abhishek Singh" && (this.age > 21 && this.age < 30)
+    });
+    res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
+Implementing pagination 
+The limit and skip will help in pagination
+ exports.users = async (req, res, next) => {
+  try {
+    const users = await User.find().limit(4).skip(4);
+    res.status(200).json({length: users.length,users});
+  } catch (err) {
+    next(err);
+  }
+};
+
+Selectiong only desire field 
+exports.users = async (req, res, next) => {
+  try {
+    const users = await User.find().select(["email","name"]);
+    res.status(200).json({length: users.length,users});
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+# Making  methods on schema level 
+userSchema.methods.encryptPassword = async function (password) {
+  const salt = await bcrypt.genSalt(5);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+userSchema.methods.validatePassword = async function (candidatePassword) {
+  const result = await bcrypt.compare(candidatePassword, this.password);
+  return result;
+};
+
+userSchema.statics.findByName = function (name) {
+  return this.find();
+} 
+
+
+Creation of virtual properties
+userSchema.virtual("averageAge").get(function () {
+  return this.age / 5
+})
+
+Middleware they associated with each document so we can call then on following events such as save,validate,remove 
+// pre middleware for more information : schema.post('init', function(doc) {
+  console.log('%s has been initialized from the db', doc._id);
+});
+schema.post('validate', function(doc) {
+  console.log('%s has been validated (but not saved yet)', doc._id);
+});
+schema.post('save', function(doc) {
+  console.log('%s has been saved', doc._id);
+});
+schema.post('remove', function(doc) {
+  console.log('%s has been removed', doc._id);
+});
+userSchema.pre('save', function (next) {
+  console.log("pre ", this.name);
+  next();
+})
+
+// post Middleware for more information : https://mongoosejs.com/docs/middleware.html#post
+userSchema.post('save', function (doc,next) { 
+  console.log("post ", this.name);
+  next();
+})
+
+schema.post('init', function(doc) {
+  console.log('%s has been initialized from the db', doc._id);
+});
+schema.post('validate', function(doc) {
+  console.log('%s has been validated (but not saved yet)', doc._id);
+});
+schema.post('save', function(doc) {
+  console.log('%s has been saved', doc._id);
+});
+schema.post('remove', function(doc) {
+  console.log('%s has been removed', doc._id);
+});

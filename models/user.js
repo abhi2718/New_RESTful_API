@@ -18,7 +18,17 @@ const mongoose = require("mongoose"),
       },
       age: {
         type: Number,
-        require:false,
+        require: false,
+        validate: {
+          validator: (value) => {
+            if (value % 2 === 0) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          message: (props) => `${props.value} is not an even number`,
+        },
       },
       gender: {
         type: String,
@@ -28,7 +38,7 @@ const mongoose = require("mongoose"),
         type: String,
         require: false,
       },
-      following: []
+      following: [],
     },
     {
       timestamps: true,
@@ -43,4 +53,22 @@ userSchema.methods.validatePassword = async function (candidatePassword) {
   const result = await bcrypt.compare(candidatePassword, this.password);
   return result;
 };
+
+userSchema.statics.findByName = function () {
+  return this.find({});
+};
+
+userSchema.virtual("averageAge").get(function () {
+  return this.age / 5
+})
+
+userSchema.pre('save', function (next) {
+  console.log("pre ", this.name);
+  next();
+})
+userSchema.post('save', function (doc,next) { 
+  console.log("post ", this.name);
+  next();
+})
+
 module.exports = mongoose.model("User", userSchema);
