@@ -4,7 +4,7 @@
 //MongoDB Update Queries: 01 Introduction to the Document Updates https://www.youtube.com/watch?v=8O4qTCHDmbU&list=PLWkguCWKqN9OncFtHmijyW0VS6f5BEKpV&index=1
 mongoose :- 
 mongoose is ODM i.e Object Data Mapping which convert the mongodb document into object so that node js can access methods and properties
-
+// Use $elemMatch to find any record from array of objects ---> https://studio3t.com/knowledge-base/articles/filter-elements-from-mongodb-arrays/
 Populate more than one properties :
 const userInfo = await User.findById(user._id).populate(["following","userRef]);
 
